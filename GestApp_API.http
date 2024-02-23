@@ -1,0 +1,6 @@
+@GestApp_API_HostAddress = http://localhost:5149
+
+GET {{GestApp_API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
