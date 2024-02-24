@@ -4,6 +4,7 @@ using GestApp_API.Repositories.Implementations;
 using GestApp_API.Configuration;
 using Microsoft.Extensions.Configuration;
 using GestApp_API.Services;
+using GestApp_API.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +19,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSqlConnection")));
 
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<DbContext>();
+
 builder.Services.AddScoped<AuthenticationService>();
+builder.Services.AddScoped<TokenValidationService>();
 
 builder.Services.AddScoped(typeof(IGenericRepository), typeof(GenericRepository));
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
@@ -34,6 +39,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
